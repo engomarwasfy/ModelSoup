@@ -94,14 +94,14 @@ def make_soup(models_folder, soup, evaluator, num_ingradients=0, num_passes=1, d
     # print(f"baseline: {baseline_performance}")
 
     all_model_files.remove(initial_model_file)
-    for iteration in range(num_passes):
+    for _ in range(num_passes):
         for file in all_model_files:
             if os.path.isfile(os.path.join(models_folder, file)): #ignore hidden directories
                 filePath = os.path.join(models_folder, file)
                 soup_next = deepcopy(soup)
                 soup_next, N = add_ingradient(soup_next, filePath, N)
                 new_performance = evaluator.eval_func(soup_next,'valid')
-            
+
 
                 if method == Methods.GREEDY:
                     print(f"new perf: {new_performance}")
@@ -114,16 +114,16 @@ def make_soup(models_folder, soup, evaluator, num_ingradients=0, num_passes=1, d
                                 break
                     else:
                         N -= 1
-                elif method == Methods.UNIFORM or method == Methods.PRUNED:
+                elif method in [Methods.UNIFORM, Methods.PRUNED]:
                     soup = soup_next
-        if method == Methods.UNIFORM or method == Methods.PRUNED: #only continue the passes if greedy soup
+        if method in [Methods.UNIFORM, Methods.PRUNED]: #only continue the passes if greedy soup
             break
 
-    
+
     if method == Methods.PRUNED:
         baseline_performance = evaluator.eval_func(soup,'valid')
         print(f"baseline (uniform soup): {baseline_performance}")
-        for iteration in range(num_passes):
+        for _ in range(num_passes):
             models_list = deepcopy(all_model_files)
             for file in reversed(models_list):
                 if os.path.isfile(os.path.join(models_folder, file)): #ignore hidden directories
@@ -141,7 +141,7 @@ def make_soup(models_folder, soup, evaluator, num_ingradients=0, num_passes=1, d
                     else:
                         N += 1
 
-               
+
 
     final_performance = evaluator.eval_func(soup,'test')
     return soup, final_performance, N

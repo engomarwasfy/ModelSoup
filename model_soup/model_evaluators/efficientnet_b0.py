@@ -287,22 +287,18 @@ class EfficientNet(nn.Module):
 
 def effnetb0(num_classes=100):
     version = "b0"
-    model = EfficientNet(
+    return EfficientNet(
         version=version,
         num_classes=num_classes,
     ).to(device)
-
-    return model # (num_examples, num_classes)
 
 
 def effnetb1(num_classes=100):
     version = "b1"
-    model = EfficientNet(
+    return EfficientNet(
         version=version,
         num_classes=num_classes,
     ).to(device)
-
-    return model # (num_examples, num_classes)
 
 learning_rate = 0.01
 weight_decay = 5e-5
